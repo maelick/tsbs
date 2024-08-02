@@ -30,7 +30,7 @@ loader:
   runner:
     batch-size: "10000"
     channel-capacity: "0"
-    db-name: benchmark
+    db-name: benchmark_iot
     do-abort-on-exist: false
     do-create-db: true
     do-load: true

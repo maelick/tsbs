@@ -28,7 +28,7 @@ cd timescaledb
 
 scale=1000
 gen_data iot timescaledb $scale
-psql -d postgres -c "DROP DATABASE IF EXISTS benchmark;"
+psql -d postgres -c "DROP DATABASE IF EXISTS benchmark-iot;"
 load_data iot timescaledb
 
 # generate and run queries
@@ -46,7 +46,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries iot $query_type timescaledb $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries iot $query_type timescaledb --postgres="host=localhost user=postgres password=postgres sslmode=disable"
+    run_queries iot $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_iot sslmode=disable"
 done
 
 # cleanup

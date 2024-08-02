@@ -24,6 +24,56 @@ psql() {
 
 cd timescaledb
 
+# generate and load cpu-only data
+
+scale=1000
+gen_data cpu-only timescaledb $scale
+psql -d postgres -c "DROP DATABASE IF EXISTS benchmark_cpu_only;"
+load_data cpu-only timescaledb
+
+# generate and run queries
+
+query_types="
+    single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1
+    single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1
+    cpu-max-all-1 cpu-max-all-8
+    double-groupby-1 double-groupby-5 double-groupby-all
+    high-cpu-all high-cpu-1 lastpoint groupby-orderby-limit
+"
+
+num_queries=100
+for query_type in $query_types; do
+    echo "Generating queries for $query_type"
+    gen_queries cpu-only $query_type timescaledb $scale $num_queries
+    echo "Running queries for $query_type"
+    run_queries cpu-only $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_cpu_only sslmode=disable"
+done
+
+# generate and load devops data
+
+scale=100
+gen_data devops timescaledb $scale
+psql -d postgres -c "DROP DATABASE IF EXISTS benchmark-devops;"
+load_data devops timescaledb
+
+# generate and run queries
+
+query_types="
+    single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1
+    single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1
+    cpu-max-all-1 cpu-max-all-8
+    double-groupby-1 double-groupby-5 double-groupby-all
+    high-cpu-all high-cpu-1 lastpoint groupby-orderby-limit
+"
+
+num_queries=100
+for query_type in $query_types; do
+    echo "Generating queries for $query_type"
+    gen_queries devops $query_type timescaledb $scale $num_queries
+    echo "Running queries for $query_type"
+    run_queries devops $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_devops sslmode=disable"
+done
+
 # generate and load iot data
 
 scale=1000
@@ -41,7 +91,7 @@ query_types="
     avg-load daily-activity breakdown-frequency
 "
 
-num_queries=10
+num_queries=100
 for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries iot $query_type timescaledb $scale $num_queries

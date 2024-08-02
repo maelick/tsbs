@@ -1,6 +1,6 @@
 include:
   - path: akumuli/compose.yaml
-  # - path: cassandra/compose.yaml
+  - path: cassandra/compose.yaml
   # - path: crate/compose.yaml
   # - path: clickhouse/compose.yaml
   # - path: cratedb/compose.yaml

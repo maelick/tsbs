@@ -44,7 +44,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries iot $query_type timescaledb
     echo "Running queries for $query_type"
-    run_queries iot $query_type --timescaledb="host=localhost user=postgres password=postgres sslmode=disable"
+    run_queries iot $query_type timescaledb --postgres="host=localhost user=postgres password=postgres sslmode=disable"
 done
 
 # cleanup

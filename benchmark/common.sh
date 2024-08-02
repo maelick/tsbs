@@ -31,18 +31,20 @@ gen_queries() {
     use_case=$1
     query_type=$2
     format=$3
+    num_queries=$4
+    if [ -z "$num_queries" ]; then
+        num_queries=100
+    fi
     if [ -z "$use_case" ] || [ -z "$query_type" ] || [ -z "$format" ]; then
-        echo "Usage: gen_queries <use_case> <query_type> <format>"
+        echo "Usage: gen_queries <use_case> <query_type> <format> [num_queries]"
         return 1
     fi
     filename="$use_case-queries-$query_type.gz"
-    if [ ! -f $filename ]; then
-        time $gen_queries --use-case=$use_case --seed=123 --scale=1000 \
-            --timestamp-start="2016-01-01T00:00:00Z" \
-            --timestamp-end="2016-01-04T00:00:01Z" \
-            --queries=1000 --query-type=$query_type --format=$format \
-            | gzip > $filename
-    fi
+    time $gen_queries --use-case=$use_case --seed=123 --scale=1000 \
+        --timestamp-start="2016-01-01T00:00:00Z" \
+        --timestamp-end="2016-01-04T00:00:01Z" \
+        --queries=$num_queries --query-type=$query_type --format=$format \
+        | gzip > $filename
 }
 
 load_data() {

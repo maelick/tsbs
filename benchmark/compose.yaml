@@ -3,7 +3,7 @@ include:
   - path: cassandra/compose.yaml
   - path: clickhouse/compose.yaml
   - path: cratedb/compose.yaml
-  # - path: influxdb/compose.yaml
+  - path: influx/compose.yaml
   # - path: mongodb/compose.yaml
   # - path: questdb/compose.yaml
   # - path: siridb/compose.yaml

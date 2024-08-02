@@ -4,7 +4,7 @@ include:
   - path: clickhouse/compose.yaml
   - path: cratedb/compose.yaml
   - path: influx/compose.yaml
-  # - path: mongodb/compose.yaml
+  - path: mongo/compose.yaml
   # - path: questdb/compose.yaml
   # - path: siridb/compose.yaml
   - path: timescaledb/compose.yaml

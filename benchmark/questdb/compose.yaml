@@ -1,0 +1,16 @@
+services:
+  questdb:
+    image: questdb/questdb:8.1.0
+    ports:
+      # - 9000:9000
+      - 9009:9009
+    volumes:
+      - questdb-data:/root/.questdb
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  questdb-data:

@@ -40,5 +40,5 @@ loader:
     limit: "0"
     reporting-period: 10s
     seed: 0
-    workers: "1"
+    workers: "2"
   target: timescaledb

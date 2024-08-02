@@ -1,5 +1,5 @@
 include:
-  # - path: akumuli/compose.yaml
+  - path: akumuli/compose.yaml
   # - path: cassandra/compose.yaml
   # - path: crate/compose.yaml
   # - path: clickhouse/compose.yaml

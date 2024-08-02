@@ -13,13 +13,14 @@ load_script=${scripts_dir}/load/load_timescaledb.sh
 gen_data() {
     use_case=$1
     format=$2
-    if [ -z "$use_case" ]; then
-        echo "Usage: gen_data <use_case> <format>"
+    scale=$3
+    if [ -z "$use_case" ] || [ -z "$format" ] || [ -z "$scale" ]; then
+        echo "Usage: gen_data <use_case> <format> <scale>"
         return 1
     fi
     filename="$use_case-data.gz"
     if [ ! -f $filename ]; then
-        time $gen_data --use-case=$use_case --seed=123 --scale=1000 \
+        time $gen_data --use-case=$use_case --seed=123 --scale=$scale \
             --timestamp-start="2016-01-01T00:00:00Z" \
             --timestamp-end="2016-01-04T00:00:00Z" \
             --log-interval="10s" --format=$format \
@@ -31,12 +32,13 @@ gen_queries() {
     use_case=$1
     query_type=$2
     format=$3
-    num_queries=$4
+    scale=$4
+    num_queries=$5
     if [ -z "$num_queries" ]; then
         num_queries=100
     fi
-    if [ -z "$use_case" ] || [ -z "$query_type" ] || [ -z "$format" ]; then
-        echo "Usage: gen_queries <use_case> <query_type> <format> [num_queries]"
+    if [ -z "$use_case" ] || [ -z "$query_type" ] || [ -z "$format" ] || [ -z "$scale" ]; then
+        echo "Usage: gen_queries <use_case> <query_type> <format> <scale> [num_queries]"
         return 1
     fi
     filename="$use_case-queries-$query_type.gz"

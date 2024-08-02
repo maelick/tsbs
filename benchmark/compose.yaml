@@ -8,7 +8,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
     volumes:
-      - timescaledb-volume:/var/lib/postgresql/data
+      - timescaledb-data:/home/postgres
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgress"]
       interval: 5s
@@ -16,4 +16,4 @@ services:
     restart: always
 
 volumes:
- timescaledb-volume:
+ timescaledb-data:

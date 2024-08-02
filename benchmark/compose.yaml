@@ -2,7 +2,7 @@ include:
   - path: akumuli/compose.yaml
   - path: cassandra/compose.yaml
   - path: clickhouse/compose.yaml
-  # - path: cratedb/compose.yaml
+  - path: cratedb/compose.yaml
   # - path: influxdb/compose.yaml
   # - path: mongodb/compose.yaml
   # - path: questdb/compose.yaml

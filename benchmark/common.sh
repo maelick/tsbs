@@ -40,7 +40,7 @@ gen_queries() {
         return 1
     fi
     filename="$use_case-queries-$query_type.gz"
-    time $gen_queries --use-case=$use_case --seed=123 --scale=1000 \
+    $gen_queries --use-case=$use_case --seed=123 --scale=1000 \
         --timestamp-start="2016-01-01T00:00:00Z" \
         --timestamp-end="2016-01-04T00:00:01Z" \
         --queries=$num_queries --query-type=$query_type --format=$format \

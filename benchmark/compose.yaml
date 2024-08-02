@@ -1,19 +1,11 @@
-services:
-  timescaledb:
-    image: timescale/timescaledb-ha:pg16
-    ports:
-      - 5432:5432
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=postgres
-    volumes:
-      - timescaledb-data:/home/postgres
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgress"]
-      interval: 5s
-      retries: 5
-    restart: always
-
-volumes:
- timescaledb-data:
+include:
+  # - path: akumuli/compose.yaml
+  # - path: cassandra/compose.yaml
+  # - path: crate/compose.yaml
+  # - path: clickhouse/compose.yaml
+  # - path: cratedb/compose.yaml
+  # - path: influxdb/compose.yaml
+  # - path: mongodb/compose.yaml
+  # - path: questdb/compose.yaml
+  # - path: siridb/compose.yaml
+  - path: timescaledb/compose.yaml

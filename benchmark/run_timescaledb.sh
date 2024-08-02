@@ -13,13 +13,6 @@ while ! docker exec -i $container_name pg_isready -U postgres; do
     sleep 1
 done
 
-cd timescaledb
-
-# generate data and queries
-
-gen_data iot timescaledb
-gen_queries iot breakdown-frequency timescaledb
-
 psql() {
     if [ -z "$1" ] || [ "$1" = "-t" ]; then
         shift 1
@@ -29,11 +22,30 @@ psql() {
     fi
 }
 
-# drop existing database and load data
-psql -d postgres -c "DROP DATABASE IF EXISTS benchmark;"
+cd timescaledb
 
+# generate and load iot data
+
+gen_data iot timescaledb
+psql -d postgres -c "DROP DATABASE IF EXISTS benchmark;"
 load_data iot timescaledb
-run_queries iot breakdown-frequency --postgres="host=localhost user=postgres password=postgres sslmode=disable"
+
+# generate and run queries
+
+query_types="
+    last-loc low-fuel high-load stationary-trucks
+    long-driving-sessions long-daily-sessions
+    avg-vs-projected-fuel-consumption
+    avg-daily-driving-duration avg-daily-driving-session
+    avg-load daily-activity breakdown-frequency
+"
+
+for query_type in $query_types; do
+    echo "Generating queries for $query_type"
+    gen_queries iot $query_type timescaledb
+    echo "Running queries for $query_type"
+    run_queries iot $query_type --timescaledb="host=localhost user=postgres password=postgres sslmode=disable"
+done
 
 # cleanup
 docker compose down

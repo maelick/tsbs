@@ -1,7 +1,5 @@
 ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
-LOAD_OPTIONS := --chunk-time 8h0m0s --field-index-count 1 --pass postgres
-RUN_OPTIONS := --pass postgres
 
 include ../common.mk
 
@@ -15,3 +13,9 @@ wait-db:
 
 .PHONY: data
 data: cpu-only-data.gz devops-data.gz
+
+.PHONY: load-data
+load-data: load-cpu-only load-devops
+
+.PHONY: run-queries
+run-queries: run-cpu-only run-devops

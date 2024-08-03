@@ -54,7 +54,7 @@ clean-queries:
 	
 .PHONY: clean-volume
 clean-volume: down
-	docker volume rm tsbs_influx-data
+	docker volume rm -f tsbs_$(DB_NAME)-data
 
 .PHONY: ready
 ready: up wait-db

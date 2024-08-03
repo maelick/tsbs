@@ -30,13 +30,17 @@ type DataGenerator struct {
 	// Out is the writer where data should be written. If nil, it will be
 	// os.Stdout unless File is specified in the GeneratorConfig passed to
 	// Generate.
-	Out io.Writer
+	Out io.WriteCloser
 
 	config *common.DataGeneratorConfig
 
 	// bufOut represents the buffered writer that should actually be passed to
 	// any operations that write out data.
 	bufOut *bufio.Writer
+
+	// fileOut is the underlying WriteCloser of bufOut. It should be closed
+	// when done writing as it can have buffered data too (e.g. gzip).
+	fileOut io.WriteCloser
 }
 
 func (g *DataGenerator) init(config common.GeneratorConfig) error {
@@ -58,7 +62,7 @@ func (g *DataGenerator) init(config common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, err = utils.GetBufferedWriter(g.config.File, g.Out)
+	g.bufOut, g.fileOut, err = utils.GetBufferedWriter(g.config.File, g.Out)
 	if err != nil {
 		return err
 	}
@@ -102,8 +106,17 @@ func (g *DataGenerator) CreateSimulator(config *common.DataGeneratorConfig) (com
 	return scfg.NewSimulator(g.config.LogInterval, g.config.Limit), nil
 }
 
+func (g *DataGenerator) close() {
+	if g.bufOut != nil {
+		g.bufOut.Flush()
+	}
+	if g.fileOut != nil {
+		g.fileOut.Close()
+	}
+}
+
 func (g *DataGenerator) runSimulator(sim common.Simulator, serializer serialize.PointSerializer, dgc *common.DataGeneratorConfig) error {
-	defer g.bufOut.Flush()
+	defer g.close()
 
 	currGroupID := uint(0)
 	point := data.NewPoint()

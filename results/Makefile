@@ -9,7 +9,7 @@ ALL := akumuli cratedb influx siridb timescaledb
 benchmark: $(addsuffix -benchmark, $(ALL))
 
 .PHONY: clean
-clean: clean-data clean-queries clean-results
+clean: clean-data clean-queries clean-results clean-logs
 
 .PHONY: clean-data
 clean-data:

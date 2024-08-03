@@ -40,6 +40,10 @@ IOT_QUERIES ?= \
 	avg-daily-driving-duration avg-daily-driving-session \
 	avg-load daily-activity breakdown-frequency
 
+.PHONY: benchmark
+benchmark: data load-data run-queries
+	make down
+
 .PHONY: clean-data
 clean-data:
 	rm *-data.gz

@@ -29,7 +29,7 @@ cd timescaledb
 scale=1000
 gen_data cpu-only timescaledb $scale
 psql -d postgres -c "DROP DATABASE IF EXISTS benchmark_cpu_only;"
-load_data cpu-only timescaledb
+load_data cpu-only timescaledb --chunk-time 8h0m0s --field-index-count 1 --pass postgres
 
 # generate and run queries
 
@@ -54,7 +54,7 @@ done
 scale=100
 gen_data devops timescaledb $scale
 psql -d postgres -c "DROP DATABASE IF EXISTS benchmark-devops;"
-load_data devops timescaledb
+load_data devops timescaledb --chunk-time 8h0m0s --field-index-count 1 --pass postgres
 
 # generate and run queries
 
@@ -79,7 +79,7 @@ done
 scale=1000
 gen_data iot timescaledb $scale
 psql -d postgres -c "DROP DATABASE IF EXISTS benchmark-iot;"
-load_data iot timescaledb
+load_data iot timescaledb --chunk-time 8h0m0s --field-index-count 1 --pass postgres
 
 # generate and run queries
 

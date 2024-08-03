@@ -49,14 +49,28 @@ gen_queries() {
         | gzip > $filename
 }
 
-load_data() {
+load_data_from_config() {
     use_case=$1
     db=$2
     if [ -z "$use_case" ] || [ -z "$db" ]; then
-        echo "Usage: load_data <use_case> <db>"
+        echo "Usage: load_data_from_config <use_case> <db>"
         return 1
     fi
     time $tsbs_load load $db --config=./$use_case-config.yaml | tee $use_case-load.log
+}
+
+load_data() {
+    use_case=$1
+    db=$2
+    shift 2
+    if [ -z "$use_case" ] || [ -z "$db" ]; then
+        echo "Usage: load_data <use_case> <db> [args]"
+        return 1
+    fi
+    db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
+    data_file="$use_case-data.gz"
+    log_file="$use_case-load.log"
+    ${tsbs_load}_${db} --workers=2 --batch-size=10000 --db-name=$db_name --file $data_file "$@" | tee $log_file
 }
 
 run_queries() {
@@ -70,5 +84,5 @@ run_queries() {
     fi
     filename="$use_case-queries-$query_type"
     tsbs_run="${bin_dir}/tsbs_run_queries_$db"
-    time (cat "$filename.gz" | gunzip | $tsbs_run --workers=1 "$@") | tee "$filename.log"
+    time $tsbs_run --workers=1 --file "$filename.gz" "$@" | tee "$filename.log"
 }

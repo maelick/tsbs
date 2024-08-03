@@ -1,11 +1,13 @@
 ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
+LOAD_OPTIONS := --hosts http://localhost:9002
+RUN_OPTIONS := --hosts http://localhost:9002
 
 include ../common.mk
 
 .PHONY: wait-db
 wait-db:
-	@while ! nc -z localhost 9000; do \
+	@while ! nc -z localhost 9002; do \
 		echo "Waiting for ${DB_NAME} to be ready..."; \
 		sleep 1; \
 	done

@@ -1,11 +1,13 @@
 ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
+LOAD_OPTIONS := --url http://localhost:9001
+RUN_OPTIONS := --urls http://localhost:9001
 
 include ../common.mk
 
 .PHONY: wait-db
 wait-db:
-	@while ! curl -s localhost:9000 2>&1 > /dev/null; do \
+	@while ! curl -s localhost:9001 2>&1 > /dev/null; do \
 		echo "Waiting for ${DB_NAME} to be ready..."; \
 		sleep 1; \
 	done

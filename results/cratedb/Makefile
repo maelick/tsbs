@@ -1,5 +1,7 @@
 ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
+LOAD_OPTIONS := --port 5433
+RUN_OPTIONS := --port 5433
 
 CPU_ONLY_QUERIES := \
 	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \

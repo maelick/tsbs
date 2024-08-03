@@ -50,7 +50,7 @@ type QueryGenerator struct {
 	// Out is the writer where data should be written. If nil, it will be
 	// os.Stdout unless File is specified in the GeneratorConfig passed to
 	// Generate.
-	Out io.Writer
+	Out io.WriteCloser
 	// DebugOut is where non-generated messages should be written. If nil, it
 	// will be os.Stderr.
 	DebugOut io.Writer
@@ -66,6 +66,10 @@ type QueryGenerator struct {
 	// bufOut represents the buffered writer that should actually be passed to
 	// any operations that write out data.
 	bufOut *bufio.Writer
+
+	// fileOut is the underlying WriteCloser of bufOut. It should be closed
+	// when done writing as it can have buffered data too (e.g. gzip).
+	fileOut io.WriteCloser
 }
 
 // NewQueryGenerator returns a QueryGenerator that is set up to work with a given
@@ -134,7 +138,7 @@ func (g *QueryGenerator) init(conf common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, err = utils.GetBufferedWriter(g.conf.File, g.Out)
+	g.bufOut, g.fileOut, err = utils.GetBufferedWriter(g.conf.File, g.Out)
 	if err != nil {
 		return err
 	}
@@ -203,11 +207,20 @@ func (g *QueryGenerator) getUseCaseGenerator(c *config.QueryGeneratorConfig) (qu
 	}
 }
 
+func (g *QueryGenerator) close() {
+	if g.bufOut != nil {
+		g.bufOut.Flush()
+	}
+	if g.fileOut != nil {
+		g.fileOut.Close()
+	}
+}
+
 func (g *QueryGenerator) runQueryGeneration(useGen queryUtils.QueryGenerator, filler queryUtils.QueryFiller, c *config.QueryGeneratorConfig) error {
 	stats := make(map[string]int64)
 	currentGroup := uint(0)
 	enc := gob.NewEncoder(g.bufOut)
-	defer g.bufOut.Flush()
+	defer g.close()
 
 	rand.Seed(g.conf.Seed)
 	//fmt.Println(g.config.Seed)

@@ -4,6 +4,7 @@ COMPOSE := $(SCRIPT_DIR)/compose.sh
 GEN_DATA := $(BIN_DIR)/tsbs_generate_data
 GEN_QUERIES := $(BIN_DIR)/tsbs_generate_queries
 LOAD_DATA := $(BIN_DIR)/tsbs_load
+RUN_QUERIES := $(BIN_DIR)/tsbs_run_queries
 
 CPU_ONLY_SCALE ?= 10
 DEVOPS_SCALE ?= 10
@@ -71,6 +72,15 @@ cpu-only-queries: $(foreach query,$(CPU_ONLY_QUERIES),queries/cpu-only-$(query).
 .PHONY: iot-queries
 iot-queries: $(foreach query,$(IOT_QUERIES),queries/iot-$(query).gz)
 
+.PHONY: run-cpu-only
+run-cpu-only: $(foreach query,$(CPU_ONLY_QUERIES),run-cpu-only-$(query))
+
+.PHONY: run-devops
+run-devops: $(foreach query,$(DEVOPS_QUERIES),run-devops-$(query))
+
+.PHONY: run-iot
+run-iot: $(foreach query,$(IOT_QUERIES),run-iot-$(query))
+
 .PHONY: load-%
 load-%: ready %-data.gz
 	@echo "Loading $* data for ${DB_NAME}"
@@ -82,6 +92,39 @@ load-%: ready %-data.gz
 		--file "$*-data.gz" \
 		--results-file "$*-load.json" \
 		${LOAD_OPTIONS} | tee "logs/$*-load.log"
+
+.PHONY: run-cpu-only-%
+run-cpu-only-%: ready queries/cpu-only-%.gz
+	@echo "Running $* queries for ${DB_NAME}"
+	mkdir -p logs
+	${RUN_QUERIES}_${DB_NAME} \
+		--workers=1 \
+		--db-name=benchmark_cpu_only \
+		--file "queries/cpu-only-$*.gz" \
+		--results-file "cpu-only-$*.json" \
+		${RUN_OPTIONS} | tee "logs/cpu-only-$*.log"
+
+.PHONY: run-devops-%
+run-devops-%: ready queries/devops-%.gz
+	@echo "Running $* queries for ${DB_NAME}"
+	mkdir -p logs
+	${RUN_QUERIES}_${DB_NAME} \
+		--workers=1 \
+		--db-name=benchmark_devops \
+		--file "queries/devops-$*.gz" \
+		--results-file "devops-$*.json" \
+		${RUN_OPTIONS} | tee "logs/devops-$*.log"
+
+.PHONY: run-iot-%
+run-iot-%: ready queries/iot-%.gz
+	@echo "Running $* queries for ${DB_NAME}"
+	mkdir -p logs
+	${RUN_QUERIES}_${DB_NAME} \
+		--workers=1 \
+		--db-name=benchmark_iot \
+		--file "queries/iot-$*.gz" \
+		--results-file "iot-$*.json" \
+		${RUN_OPTIONS} | tee "logs/iot-$*.log"
 
 %-data.gz:
 	@echo "Generating $* data for ${DB_NAME}"

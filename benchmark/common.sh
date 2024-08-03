@@ -74,7 +74,7 @@ load_data() {
     db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
     data_file="$use_case-data.gz"
     log_file="$use_case-load.log"
-    ${tsbs_load}_${db} --workers=2 --batch-size=10000 --db-name=$db_name --file $data_file "$@" | tee $log_file
+    time ${tsbs_load}_${db} --workers=2 --batch-size=10000 --db-name=$db_name --file $data_file "$@" | tee $log_file
 }
 
 run_queries() {

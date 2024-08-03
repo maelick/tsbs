@@ -19,7 +19,7 @@ const (
 func GetBufferedReader(fileName string, fallback io.Reader) (*bufio.Reader, error) {
 	file, err := fileReader(fileName, fallback)
 	if err != nil {
-		return nil, fmt.Errorf("cannot open file for write %s: %w", fileName, err)
+		return nil, fmt.Errorf("cannot open file for read %s: %w", fileName, err)
 	}
 	return bufio.NewReaderSize(file, defaultReadSize), nil
 }

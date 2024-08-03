@@ -11,7 +11,7 @@ tsbs_load=${bin_dir}/tsbs_load
 load_script=${scripts_dir}/load/load_timescaledb.sh
 
 compose() {
-    ${benchmark_dir}/compose.sh
+    ${benchmark_dir}/compose.sh $@
 }
 
 gen_data() {

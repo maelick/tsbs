@@ -14,3 +14,9 @@ wait-db:
 
 .PHONY: data
 data: cpu-only-data.gz devops-data.gz
+
+.PHONY: load-data
+load-data: load-cpu-only load-devops
+
+.PHONY: run-queries
+run-queries: run-cpu-only run-devops

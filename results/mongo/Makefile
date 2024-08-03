@@ -9,7 +9,7 @@ include ../common.mk
 
 .PHONY: wait-db
 wait-db:
-	@while ! docker exec -i tsbs-mongo-1 mongosh --eval "db.stats()" 2>/dev/null; do \
+	@while ! docker exec -i tsbs-mongo-1 mongosh --eval "db.adminCommand('ping')" 2>/dev/null; do \
 		echo "Waiting for ${DB_NAME} to be ready..."; \
 		sleep 1; \
 	done

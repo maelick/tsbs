@@ -31,7 +31,7 @@ func fileWriter(fileName string, fallback io.Writer) (io.Writer, error) {
 	if len(fileName) == 0 {
 		return fallback, nil
 	}
-	file, err := os.Open(fileName)
+	file, err := os.Create(fileName)
 	if err != nil {
 		return nil, err
 	}

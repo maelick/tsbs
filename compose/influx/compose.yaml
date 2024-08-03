@@ -4,7 +4,7 @@ services:
     ports:
       - 8086:8086
     volumes:
-      - influxdb-data:/var/lib/influxdb
+      - influx-data:/var/lib/influxdb
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8086/ping"]
       interval: 5s
@@ -12,4 +12,4 @@ services:
     restart: always
 
 volumes:
-  influxdb-data:
+  influx-data:

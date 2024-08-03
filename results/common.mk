@@ -44,13 +44,24 @@ IOT_QUERIES ?= \
 benchmark: data load-data run-queries
 	$(MAKE) clean-volume
 
+.PHONY: clean
+clean: clean-data clean-queries clean-results clean-logs
+
 .PHONY: clean-data
 clean-data:
-	rm *-data.gz
+	rm -rf data
 
 .PHONY: clean-queries
 clean-queries:
-	rm queries/*.gz
+	rm -rf queries
+
+.PHONY: clean-results
+clean-results:
+	rm -rf results
+
+.PHONY: clean-logs
+clean-logs:
+	rm -rf logs
 	
 .PHONY: clean-volume
 clean-volume: down

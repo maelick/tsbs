@@ -68,13 +68,13 @@ down:
 	${COMPOSE} down ${DB_NAME}
 
 .PHONY: devops-queries
-devops-queries: $(foreach query,$(DEVOPS_QUERIES),queries/devops-$(query).gz)
+devops-queries: $(foreach query,$(DEVOPS_QUERIES),queries/devops/$(query).gz)
 
 .PHONY: cpu-only-queries
-cpu-only-queries: $(foreach query,$(CPU_ONLY_QUERIES),queries/cpu-only-$(query).gz)
+cpu-only-queries: $(foreach query,$(CPU_ONLY_QUERIES),queries/cpu-only/$(query).gz)
 
 .PHONY: iot-queries
-iot-queries: $(foreach query,$(IOT_QUERIES),queries/iot-$(query).gz)
+iot-queries: $(foreach query,$(IOT_QUERIES),queries/iot/$(query).gz)
 
 .PHONY: run-cpu-only
 run-cpu-only: $(foreach query,$(CPU_ONLY_QUERIES),run-cpu-only-$(query))
@@ -86,52 +86,57 @@ run-devops: $(foreach query,$(DEVOPS_QUERIES),run-devops-$(query))
 run-iot: $(foreach query,$(IOT_QUERIES),run-iot-$(query))
 
 .PHONY: load-%
-load-%: ready %-data.gz
+load-%: ready data/%.gz
 	@echo "Loading $* data for ${DB_NAME}"
-	mkdir -p logs
+	mkdir -p logs/load
+	mkdir -p results/load
 	${LOAD_DATA}_${DB_NAME} \
 		--workers=${NUM_WORKERS_LOAD} \
 		--batch-size=${BATCH_SIZE} \
 		--db-name=benchmark_$(shell echo $* | tr '-' '_') \
-		--file "$*-data.gz" \
-		--results-file "$*-load.json" \
-		${LOAD_OPTIONS} | tee "logs/$*-load.log"
+		--file "data/$*.gz" \
+		--results-file "results/load/$*.json" \
+		${LOAD_OPTIONS} | tee "logs/load/$*.log"
 
 .PHONY: run-cpu-only-%
-run-cpu-only-%: ready queries/cpu-only-%.gz
+run-cpu-only-%: ready queries/cpu-only/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
-	mkdir -p logs
+	mkdir -p logs/cpu-only
+	mkdir -p results/cpu-only
 	${RUN_QUERIES}_${DB_NAME} \
 		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_cpu_only \
-		--file "queries/cpu-only-$*.gz" \
-		--results-file "cpu-only-$*.json" \
-		${RUN_OPTIONS} | tee "logs/cpu-only-$*.log"
+		--file "queries/cpu-only/$*.gz" \
+		--results-file "results/cpu-only/$*.json" \
+		${RUN_OPTIONS} | tee "logs/cpu-only/$*.log"
 
 .PHONY: run-devops-%
-run-devops-%: ready queries/devops-%.gz
+run-devops-%: ready queries/devops/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
-	mkdir -p logs
+	mkdir -p logs/devops
+	mkdir -p results/devops
 	${RUN_QUERIES}_${DB_NAME} \
 		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_devops \
-		--file "queries/devops-$*.gz" \
-		--results-file "devops-$*.json" \
-		${RUN_OPTIONS} | tee "logs/devops-$*.log"
+		--file "queries/devops/$*.gz" \
+		--results-file "results/devops/$*.json" \
+		${RUN_OPTIONS} | tee "logs/devops/$*.log"
 
 .PHONY: run-iot-%
-run-iot-%: ready queries/iot-%.gz
+run-iot-%: ready queries/iot/%.gz
 	@echo "Running $* queries for ${DB_NAME}"
-	mkdir -p logs
+	mkdir -p logs/iot
+	mkdir -p results/iot
 	${RUN_QUERIES}_${DB_NAME} \
 		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_iot \
-		--file "queries/iot-$*.gz" \
-		--results-file "iot-$*.json" \
-		${RUN_OPTIONS} | tee "logs/iot-$*.log"
+		--file "queries/iot/$*.gz" \
+		--results-file "results/iot/$*.json" \
+		${RUN_OPTIONS} | tee "logs/iot/$*.log"
 
-%-data.gz:
+data/%.gz:
 	@echo "Generating $* data for ${DB_NAME}"
+	@mkdir -p data
 	$(eval SCALE := $(shell echo $* | sed 's/cpu-only/${CPU_ONLY_SCALE}/;s/devops/${DEVOPS_SCALE}/;s/iot/${IOT_SCALE}/'))
 	${GEN_DATA} \
 		--use-case=$* \
@@ -143,9 +148,9 @@ run-iot-%: ready queries/iot-%.gz
 		--format="${DB_NAME}" \
 		--file "$@"
 
-queries/cpu-only-%.gz:
+queries/cpu-only/%.gz:
 	@echo "Generating cpu-only $* queries for ${DB_NAME}"
-	@mkdir -p queries
+	@mkdir -p queries/cpu-only
 	${GEN_QUERIES} \
 		--use-case=cpu-only \
 		--seed=${SEED} \
@@ -157,9 +162,9 @@ queries/cpu-only-%.gz:
 		--format=${DB_NAME} \
 		--file "$@"
 
-queries/devops-%.gz:
+queries/devops/%.gz:
 	@echo "Generating devops $* queries for ${DB_NAME}"
-	@mkdir -p queries
+	@mkdir -p queries/devops
 	${GEN_QUERIES} \
 		--use-case=devops \
 		--seed=${SEED} \
@@ -171,9 +176,9 @@ queries/devops-%.gz:
 		--format=${DB_NAME} \
 		--file "$@"
 
-queries/iot-%.gz:
+queries/iot/%.gz:
 	@echo "Generating iot $* queries for ${DB_NAME}"
-	@mkdir -p queries
+	@mkdir -p queries/iot
 	${GEN_QUERIES} \
 		--use-case=iot \
 		--seed=${SEED} \

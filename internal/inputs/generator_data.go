@@ -8,6 +8,7 @@ import (
 	"os"
 	"sort"
 
+	"github.com/timescale/tsbs/internal/utils"
 	"github.com/timescale/tsbs/pkg/data"
 	"github.com/timescale/tsbs/pkg/data/serialize"
 	"github.com/timescale/tsbs/pkg/data/usecases"
@@ -57,7 +58,7 @@ func (g *DataGenerator) init(config common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, err = getBufferedWriter(g.config.File, g.Out)
+	g.bufOut, err = utils.GetBufferedWriter(g.config.File, g.Out)
 	if err != nil {
 		return err
 	}

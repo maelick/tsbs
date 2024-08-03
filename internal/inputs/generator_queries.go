@@ -11,6 +11,7 @@ import (
 	"time"
 
 	queryUtils "github.com/timescale/tsbs/cmd/tsbs_generate_queries/utils"
+	"github.com/timescale/tsbs/internal/utils"
 	internalUtils "github.com/timescale/tsbs/internal/utils"
 	"github.com/timescale/tsbs/pkg/data/usecases/common"
 	"github.com/timescale/tsbs/pkg/query/config"
@@ -28,6 +29,7 @@ const (
 	errUnknownUseCaseFmt        = "use case '%s' is undefined"
 	errCannotParseTimeFmt       = "cannot parse time from string '%s': %v"
 	errBadUseFmt                = "invalid use case specified: '%v'"
+	errUnknownFormatFmt         = "unknown format: '%s'"
 )
 
 // DevopsGeneratorMaker creates a query generator for devops use case
@@ -132,7 +134,7 @@ func (g *QueryGenerator) init(conf common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, err = getBufferedWriter(g.conf.File, g.Out)
+	g.bufOut, err = utils.GetBufferedWriter(g.conf.File, g.Out)
 	if err != nil {
 		return err
 	}

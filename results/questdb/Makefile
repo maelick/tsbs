@@ -11,6 +11,7 @@ wait-db:
 	done
 	@echo "${DB_NAME} is ready!"
 
+# FIXME missing results-file, db-name
 .PHONY: load-%
 load-%: ready %-data.gz
 	@echo "Loading $* data for ${DB_NAME}"
@@ -19,7 +20,6 @@ load-%: ready %-data.gz
 		--workers=${NUM_WORKERS_LOAD} \
 		--batch-size=${BATCH_SIZE} \
 		--file "$*-data.gz" \
-		--results-file "$*-load.json" \
 		${LOAD_OPTIONS} | tee "logs/$*-load.log"
 
 .PHONY: data

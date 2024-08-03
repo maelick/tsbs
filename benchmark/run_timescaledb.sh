@@ -6,9 +6,8 @@ fi
 source ${benchmark_dir}/common.sh
 
 # start and wait for timescaledb to be ready
-docker compose up -d timescaledb
-container_name="$(basename $(pwd))-timescaledb-1"
-while ! docker exec -i $container_name pg_isready -U postgres; do
+compose up -d timescaledb
+while ! docker exec -i tsbs-timescaledb-1 pg_isready -U postgres; do
     echo "Waiting for postgres to be ready..."
     sleep 1
 done
@@ -16,9 +15,9 @@ done
 psql() {
     if [ -z "$1" ] || [ "$1" = "-t" ]; then
         shift 1
-        docker exec -it $container_name psql -U postgres "$@"
+        docker exec -it tsbs-timescaledb-1 psql -U postgres "$@"
     else
-        docker exec -i $container_name psql -U postgres "$@"
+        docker exec -i tsbs-timescaledb-1 psql -U postgres "$@"
     fi
 }
 
@@ -100,5 +99,5 @@ for query_type in $query_types; do
 done
 
 # cleanup
-docker compose down
-docker volume rm benchmark_timescaledb-data
+compose down
+docker volume rm tsbs_timescaledb-data

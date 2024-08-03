@@ -10,6 +10,10 @@ gen_queries=${bin_dir}/tsbs_generate_queries
 tsbs_load=${bin_dir}/tsbs_load
 load_script=${scripts_dir}/load/load_timescaledb.sh
 
+compose() {
+    ${benchmark_dir}/compose.sh
+}
+
 gen_data() {
     use_case=$1
     format=$2

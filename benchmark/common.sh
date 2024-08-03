@@ -45,7 +45,8 @@ gen_queries() {
         echo "Usage: gen_queries <use_case> <query_type> <format> <scale> [num_queries]"
         return 1
     fi
-    filename="$use_case-queries-$query_type.gz"
+    mkdir -p queries
+    filename="queries/$use_case-$query_type.gz"
     $gen_queries --use-case=$use_case --seed=123 --scale=1000 \
         --timestamp-start="2016-01-01T00:00:00Z" \
         --timestamp-end="2016-01-04T00:00:01Z" \
@@ -88,8 +89,8 @@ run_queries() {
         return 1
     fi
     db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
-    filename="$use_case-queries-$query_type"
+    filename="$use_case-$query_type"
     tsbs_run="${bin_dir}/tsbs_run_queries_$db"
     result_file="$filename.json"
-    time $tsbs_run --workers=1 --file "$filename.gz" --db-name $db_name "$@" --results-file $result_file | tee "$filename.log"
+    time $tsbs_run --workers=1 --file "queries/$filename.gz" --db-name $db_name "$@" --results-file $result_file | tee "$filename.log"
 }

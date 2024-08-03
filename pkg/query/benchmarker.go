@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/spf13/pflag"
+	"github.com/timescale/tsbs/load"
 	"golang.org/x/time/rate"
 )
 
@@ -118,20 +119,7 @@ type Processor interface {
 
 // GetBufferedReader returns the buffered Reader that should be used by the loader
 func (b *BenchmarkRunner) GetBufferedReader() *bufio.Reader {
-	if b.br == nil {
-		if len(b.FileName) > 0 {
-			// Read from specified file
-			file, err := os.Open(b.FileName)
-			if err != nil {
-				panic(fmt.Sprintf("cannot open file for read %s: %v", b.FileName, err))
-			}
-			b.br = bufio.NewReaderSize(file, defaultReadSize)
-		} else {
-			// Read from STDIN
-			b.br = bufio.NewReaderSize(os.Stdin, defaultReadSize)
-		}
-	}
-	return b.br
+	return load.GetBufferedReader(b.FileName)
 }
 
 // Run does the bulk of the benchmark execution.

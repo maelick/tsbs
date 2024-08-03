@@ -9,7 +9,7 @@ ALL := akumuli cratedb influx siridb timescaledb
 benchmark: $(addsuffix -benchmark, $(ALL))
 
 .PHONY: clean
-clean: clean-data clean-queries clean-results clean-logs
+clean: clean-data clean-queries clean-results clean-logs clean-volume
 
 .PHONY: clean-data
 clean-data:
@@ -26,6 +26,13 @@ clean-results:
 .PHONY: clean-logs
 clean-logs:
 	rm -rf */logs
+
+.PHONY: clean-volume
+clean-volume: $(addsuffix -clean-volume, $(ALL))
+
+.PHONY: up
+up:
+	${COMPOSE} up -d
 
 .PHONY: data
 data: $(addsuffix -data, $(ALL))
@@ -52,3 +59,6 @@ down:
 
 %-benchmark:
 	$(MAKE) -C $* benchmark
+
+%-clean-volume:
+	$(MAKE) -C $* clean-volume

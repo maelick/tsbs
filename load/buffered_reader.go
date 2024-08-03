@@ -10,7 +10,7 @@ import (
 // GetBufferedReader returns the buffered Reader that should be used by the file loader
 // if no file name is specified a buffer for STDIN is returned
 func GetBufferedReader(fileName string) *bufio.Reader {
-	buf, _, err := utils.GetBufferedReader(fileName, os.Stdin)
+	buf, err := utils.GetBufferedReader(fileName, os.Stdin)
 	if err != nil {
 		fatal("%v", err)
 		return nil

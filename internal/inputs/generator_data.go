@@ -30,7 +30,7 @@ type DataGenerator struct {
 	// Out is the writer where data should be written. If nil, it will be
 	// os.Stdout unless File is specified in the GeneratorConfig passed to
 	// Generate.
-	Out io.WriteCloser
+	Out io.Writer
 
 	config *common.DataGeneratorConfig
 
@@ -38,9 +38,9 @@ type DataGenerator struct {
 	// any operations that write out data.
 	bufOut *bufio.Writer
 
-	// fileOut is the underlying WriteCloser of bufOut. It should be closed
-	// when done writing as it can have buffered data too (e.g. gzip).
-	fileOut io.WriteCloser
+	// closerOut is a potential closer for bufOut. It should be closed
+	// when done writing as the underlying Writer can have buffered data too (e.g. gzip).
+	closerOut io.Closer
 }
 
 func (g *DataGenerator) init(config common.GeneratorConfig) error {
@@ -62,7 +62,7 @@ func (g *DataGenerator) init(config common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, g.fileOut, err = utils.GetBufferedWriter(g.config.File, g.Out)
+	g.bufOut, g.closerOut, err = utils.GetBufferedWriter(g.config.File, g.Out)
 	if err != nil {
 		return err
 	}
@@ -110,8 +110,8 @@ func (g *DataGenerator) close() {
 	if g.bufOut != nil {
 		g.bufOut.Flush()
 	}
-	if g.fileOut != nil {
-		g.fileOut.Close()
+	if g.closerOut != nil {
+		g.closerOut.Close()
 	}
 }
 
@@ -153,7 +153,7 @@ func (g *DataGenerator) getSerializer(sim common.Simulator, target targets.Imple
 	return target.Serializer(), nil
 }
 
-//TODO should be implemented in targets package
+// TODO should be implemented in targets package
 func (g *DataGenerator) writeHeader(headers *common.GeneratedDataHeaders) {
 	g.bufOut.WriteString("tags")
 

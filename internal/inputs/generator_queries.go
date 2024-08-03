@@ -11,7 +11,6 @@ import (
 	"time"
 
 	queryUtils "github.com/timescale/tsbs/cmd/tsbs_generate_queries/utils"
-	"github.com/timescale/tsbs/internal/utils"
 	internalUtils "github.com/timescale/tsbs/internal/utils"
 	"github.com/timescale/tsbs/pkg/data/usecases/common"
 	"github.com/timescale/tsbs/pkg/query/config"
@@ -50,7 +49,7 @@ type QueryGenerator struct {
 	// Out is the writer where data should be written. If nil, it will be
 	// os.Stdout unless File is specified in the GeneratorConfig passed to
 	// Generate.
-	Out io.WriteCloser
+	Out io.Writer
 	// DebugOut is where non-generated messages should be written. If nil, it
 	// will be os.Stderr.
 	DebugOut io.Writer
@@ -67,9 +66,9 @@ type QueryGenerator struct {
 	// any operations that write out data.
 	bufOut *bufio.Writer
 
-	// fileOut is the underlying WriteCloser of bufOut. It should be closed
-	// when done writing as it can have buffered data too (e.g. gzip).
-	fileOut io.WriteCloser
+	// closerOut is a potential closer for bufOut. It should be closed
+	// when done writing as the underlying Writer can have buffered data too (e.g. gzip).
+	closerOut io.Closer
 }
 
 // NewQueryGenerator returns a QueryGenerator that is set up to work with a given
@@ -138,7 +137,7 @@ func (g *QueryGenerator) init(conf common.GeneratorConfig) error {
 	if g.Out == nil {
 		g.Out = os.Stdout
 	}
-	g.bufOut, g.fileOut, err = utils.GetBufferedWriter(g.conf.File, g.Out)
+	g.bufOut, g.closerOut, err = internalUtils.GetBufferedWriter(g.conf.File, g.Out)
 	if err != nil {
 		return err
 	}
@@ -211,8 +210,8 @@ func (g *QueryGenerator) close() {
 	if g.bufOut != nil {
 		g.bufOut.Flush()
 	}
-	if g.fileOut != nil {
-		g.fileOut.Close()
+	if g.closerOut != nil {
+		g.closerOut.Close()
 	}
 }
 

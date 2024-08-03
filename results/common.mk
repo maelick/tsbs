@@ -15,6 +15,9 @@ END ?= 2016-01-02T00:00:00Z
 QUERIES_END ?= 2016-01-02T00:00:01Z
 INTERVAL ?= 10s
 NUM_QUERIES ?= 100
+NUM_WORKERS_LOAD ?= 2
+NUM_WORKERS_RUN ?= 1
+BATCH_SIZE ?= 10000
 
 CPU_ONLY_QUERIES ?= \
 	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \
@@ -86,8 +89,8 @@ load-%: ready %-data.gz
 	@echo "Loading $* data for ${DB_NAME}"
 	mkdir -p logs
 	${LOAD_DATA}_${DB_NAME} \
-		--workers=2 \
-		--batch-size=10000 \
+		--workers=${NUM_WORKERS_LOAD} \
+		--batch-size=${BATCH_SIZE} \
 		--db-name=benchmark_$(shell echo $* | tr '-' '_') \
 		--file "$*-data.gz" \
 		--results-file "$*-load.json" \
@@ -98,7 +101,7 @@ run-cpu-only-%: ready queries/cpu-only-%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs
 	${RUN_QUERIES}_${DB_NAME} \
-		--workers=1 \
+		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_cpu_only \
 		--file "queries/cpu-only-$*.gz" \
 		--results-file "cpu-only-$*.json" \
@@ -109,7 +112,7 @@ run-devops-%: ready queries/devops-%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs
 	${RUN_QUERIES}_${DB_NAME} \
-		--workers=1 \
+		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_devops \
 		--file "queries/devops-$*.gz" \
 		--results-file "devops-$*.json" \
@@ -120,7 +123,7 @@ run-iot-%: ready queries/iot-%.gz
 	@echo "Running $* queries for ${DB_NAME}"
 	mkdir -p logs
 	${RUN_QUERIES}_${DB_NAME} \
-		--workers=1 \
+		--workers=${NUM_WORKERS_RUN} \
 		--db-name=benchmark_iot \
 		--file "queries/iot-$*.gz" \
 		--results-file "iot-$*.json" \

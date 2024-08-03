@@ -45,7 +45,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries cpu-only $query_type timescaledb $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries cpu-only $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_cpu_only sslmode=disable"
+    run_queries iot $query_type timescaledb --pass postgres
 done
 
 # generate and load devops data
@@ -70,7 +70,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries devops $query_type timescaledb $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries devops $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_devops sslmode=disable"
+    run_queries iot $query_type timescaledb --pass postgres
 done
 
 # generate and load iot data
@@ -95,7 +95,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries iot $query_type timescaledb $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries iot $query_type timescaledb --postgres="host=localhost user=postgres password=postgres database=benchmark_iot sslmode=disable"
+    run_queries iot $query_type timescaledb --pass postgres
 done
 
 # cleanup

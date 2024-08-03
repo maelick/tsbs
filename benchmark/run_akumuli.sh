@@ -35,7 +35,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries cpu-only $query_type akumuli $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries cpu-only $query_type akumuli --db-name=benchmark_cpu_only
+    run_queries cpu-only $query_type akumuli
 done
 
 # generate and load devops data
@@ -59,7 +59,7 @@ for query_type in $query_types; do
     echo "Generating queries for $query_type"
     gen_queries devops $query_type akumuli $scale $num_queries
     echo "Running queries for $query_type"
-    run_queries devops $query_type akumuli --db-name=benchmark_devops
+    run_queries devops $query_type akumuli
 done
 
 # cleanup

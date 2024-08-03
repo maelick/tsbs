@@ -86,7 +86,8 @@ run_queries() {
         echo "Usage: run_queries <use_case> <query_type> <db> [args]"
         return 1
     fi
+    db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
     filename="$use_case-queries-$query_type"
     tsbs_run="${bin_dir}/tsbs_run_queries_$db"
-    time $tsbs_run --workers=1 --file "$filename.gz" "$@" | tee "$filename.log"
+    time $tsbs_run --workers=1 --file "$filename.gz" --db-name $db_name "$@" | tee "$filename.log"
 }

@@ -42,7 +42,7 @@ IOT_QUERIES ?= \
 
 .PHONY: benchmark
 benchmark: data load-data run-queries
-	make down
+	$(MAKE) clean-volume
 
 .PHONY: clean-data
 clean-data:

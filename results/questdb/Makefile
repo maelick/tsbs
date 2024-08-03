@@ -23,7 +23,7 @@ load-%: ready %-data.gz
 		${LOAD_OPTIONS} | tee "logs/$*-load.log"
 
 .PHONY: data
-data: cpu-only-data.gz devops-data.gz iot-data.gz
+data: data/cpu-only.gz data/devops.gz data/iot.gz
 
 .PHONY: load-data
 load-data: load-cpu-only load-devops load-iot

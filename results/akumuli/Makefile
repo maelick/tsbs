@@ -2,6 +2,18 @@ ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
 LOAD_OPTIONS := --endpoint=localhost:8282
 
+CPU_ONLY_QUERIES := \
+	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \
+	single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1 \
+	double-groupby-1 double-groupby-5 double-groupby-all \
+	high-cpu-all high-cpu-1 lastpoint
+
+DEVOPS_QUERIES := \
+	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \
+	single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1 \
+	double-groupby-1 double-groupby-5 double-groupby-all \
+	high-cpu-all high-cpu-1 lastpoint
+
 include ../common.mk
 
 .PHONY: wait-db

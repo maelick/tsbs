@@ -1,0 +1,14 @@
+ROOT_DIR := $(shell pwd)/../..
+DB_NAME := $(shell basename $(shell pwd))
+LOAD_OPTIONS := --chunk-time 8h0m0s --field-index-count 1 --pass postgres
+RUN_OPTIONS := --pass postgres
+
+include ../common.mk
+
+.PHONY: wait-db
+wait-db:
+	@while ! docker exec -i tsbs-timescaledb-1 pg_isready -U postgres; do \
+		echo "Waiting for ${DB_NAME} to be ready..."; \
+		sleep 1; \
+	done
+	@echo "${DB_NAME} is ready!"

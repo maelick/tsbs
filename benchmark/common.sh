@@ -74,7 +74,8 @@ load_data() {
     db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
     data_file="$use_case-data.gz"
     log_file="$use_case-load.log"
-    time ${tsbs_load}_${db} --workers=2 --batch-size=10000 --db-name=$db_name --file $data_file "$@" | tee $log_file
+    result_file="$use_case-load.json"
+    time ${tsbs_load}_${db} --workers=2 --batch-size=10000 --db-name=$db_name --file $data_file --results-file $result_file "$@" | tee $log_file
 }
 
 run_queries() {
@@ -89,5 +90,6 @@ run_queries() {
     db_name=$(echo "benchmark_${use_case}" | tr '-' '_')
     filename="$use_case-queries-$query_type"
     tsbs_run="${bin_dir}/tsbs_run_queries_$db"
-    time $tsbs_run --workers=1 --file "$filename.gz" --db-name $db_name "$@" | tee "$filename.log"
+    result_file="$filename.json"
+    time $tsbs_run --workers=1 --file "$filename.gz" --db-name $db_name "$@" --results-file $result_file | tee "$filename.log"
 }

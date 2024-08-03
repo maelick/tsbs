@@ -10,3 +10,6 @@ wait-db:
 		sleep 1; \
 	done
 	@echo "${DB_NAME} is ready!"
+
+.PHONY: data
+data: cpu-only-data.gz devops-data.gz

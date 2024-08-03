@@ -21,3 +21,6 @@ load-%: ready %-data.gz
 		--file "$*-data.gz" \
 		--results-file "$*-load.json" \
 		${LOAD_OPTIONS} | tee "logs/$*-load.log"
+
+.PHONY: data
+data: cpu-only-data.gz devops-data.gz iot-data.gz

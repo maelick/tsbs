@@ -52,9 +52,6 @@ clean-queries:
 clean-volume: down
 	docker volume rm tsbs_influx-data
 
-.PHONY: data
-data: cpu-only-data.gz devops-data.gz iot-data.gz
-
 .PHONY: ready
 ready: up wait-db
 

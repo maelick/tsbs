@@ -42,8 +42,7 @@ done
 
 scale=100
 gen_data devops cassandra $scale
-
-${tsbs_load}_cassandra --workers=2 --batch-size=10000 --endpoint=localhost:8282 --db-name=benchmark_devops --file ./devops-data.gz
+load_data devops cassandra
 
 # generate and run queries
 

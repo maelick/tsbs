@@ -42,8 +42,7 @@ done
 
 scale=100
 gen_data devops clickhouse $scale
-
-${tsbs_load}_clickhouse --workers=2 --batch-size=10000 --endpoint=localhost:8282 --db-name=benchmark_devops --file ./devops-data.gz
+load_data devops clickhouse
 
 # generate and run queries
 

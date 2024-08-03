@@ -42,8 +42,7 @@ done
 
 scale=100
 gen_data devops cratedb $scale
-
-${tsbs_load}_cratedb --workers=2 --batch-size=10000 --endpoint=localhost:8282 --db-name=benchmark_devops --file ./devops-data.gz
+load_data devops cratedb
 
 # generate and run queries
 

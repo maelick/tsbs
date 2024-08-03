@@ -18,7 +18,7 @@ cd akumuli
 
 scale=1000
 gen_data cpu-only akumuli $scale
-load_data2 cpu-only akumuli --endpoint=localhost:8282
+load_data cpu-only akumuli --endpoint=localhost:8282
 
 # generate and run queries
 

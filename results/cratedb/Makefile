@@ -13,7 +13,7 @@ DEVOPS_QUERIES := \
 	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \
 	single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1 \
 	double-groupby-1 double-groupby-5 double-groupby-all \
-	high-cpu-all high-cpu-1 lastpoint groupby-orderby-limit
+	high-cpu-1 lastpoint groupby-orderby-limit
 
 include ../common.mk
 

@@ -2,8 +2,8 @@ services:
   questdb:
     image: questdb/questdb:8.1.0
     ports:
-      - 9001:9000
-      - 9009:9009
+      - 127.0.0.1:9001:9000
+      - 127.0.0.1:9009:9009
     volumes:
       - questdb-data:/root/.questdb
     restart: always

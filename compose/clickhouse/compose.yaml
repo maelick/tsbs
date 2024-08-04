@@ -2,8 +2,8 @@ services:
   clickhouse:
     image: clickhouse/clickhouse-server:24.4
     ports:
-    #   - 8123:8123
-      - 9000:9000
+    #   - 127.0.0.1:8123:8123
+      - 127.0.0.1:9000:9000
     volumes:
       - clickhouse-data:/var/lib/clickhouse
     healthcheck:

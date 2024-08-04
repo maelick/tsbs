@@ -1,7 +1,7 @@
 ROOT_DIR := $(shell pwd)/../..
 DB_NAME := $(shell basename $(shell pwd))
-LOAD_OPTIONS := --hosts http://localhost:9002
-RUN_OPTIONS := --hosts http://localhost:9002
+LOAD_OPTIONS := --hosts localhost:9002
+RUN_OPTIONS := --hosts localhost:9002
 
 include ../common.mk
 

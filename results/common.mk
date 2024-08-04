@@ -30,6 +30,8 @@ NUM_WORKERS_LOAD ?= 2
 NUM_WORKERS_RUN ?= 1
 BATCH_SIZE ?= 10000
 
+CLEAN_VOLUME_AFTER_BENCHMARK ?= false
+
 CPU_ONLY_QUERIES ?= \
 	single-groupby-1-1-1 single-groupby-1-1-12 single-groupby-1-8-1 \
 	single-groupby-5-1-1 single-groupby-5-1-12 single-groupby-5-8-1 \
@@ -53,7 +55,11 @@ IOT_QUERIES ?= \
 
 .PHONY: benchmark
 benchmark: data load-data run-queries
+ifeq ($(CLEAN_VOLUME_AFTER_BENCHMARK),true)
 	$(MAKE) clean-volume
+else
+	$(MAKE) down
+endif
 
 .PHONY: clean
 clean: clean-data clean-queries clean-results clean-logs

@@ -1,3 +1,14 @@
+# Description: Common Makefile for running benchmarks
+# The following variables and targets are expected to be defined in the Makefile that includes this one:
+# - ROOT_DIR: the root directory of the project relative to the Makefile
+# - DB_NAME: the name of the database to benchmark
+# - LOAD_OPTIONS (optional): options to pass to the load tool
+# - RUN_OPTIONS (optional): options to pass to the run tool
+# - wait-db: a target that waits for the database to be ready
+# - data: a target which depends on the available use cases (cpu-only, devops, and/or iot)
+# - load-data: a target which depends on the available use cases (cpu-only, devops, and/or iot)
+# - run-queries: a target which depends on the available use cases (cpu-only, devops, and/or iot)
+
 BIN_DIR := $(ROOT_DIR)/bin
 SCRIPT_DIR := $(ROOT_DIR)/scripts
 COMPOSE := $(SCRIPT_DIR)/compose.sh

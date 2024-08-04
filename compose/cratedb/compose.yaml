@@ -3,9 +3,9 @@ services:
     image: crate:5.7
     command: -Cdiscovery.type=single-node
     ports:
-      - 4200:4200
-    #   - 4300:4300
-      - 5433:5432
+      - 127.0.0.1:4200:4200
+    #   - 127.0.0.1:4300:4300
+      - 127.0.0.1:5433:5432
     volumes:
       - cratedb-data:/data
     healthcheck:

@@ -7,7 +7,7 @@ include ../common.mk
 
 .PHONY: wait-db
 wait-db:
-	@while ! docker exec -i tsbs-timescaledb-1 pg_isready -U postgres; do \
+	@while ! docker exec -i tsbs-timescaledb-1 psql -U postgres -d postgres -c "SELECT count(1)"; do \
 		echo "Waiting for ${DB_NAME} to be ready..."; \
 		sleep 1; \
 	done
